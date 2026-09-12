@@ -7,7 +7,7 @@ const OFFSET = 916132832;
 async function getNextSequence() {
     const counter = await Counter.findOneAndUpdate(
         {
-            id: 'urlCount'
+            _id: 'urlCount'
         },
         {
             $inc: {
@@ -15,7 +15,7 @@ async function getNextSequence() {
             }
         },
         {
-            new: true,
+            returnDocument: 'after',
             upsert: true
         }
     );
@@ -65,7 +65,7 @@ const shortenUrl = async (req, res) => {
 
 const getAllUrls = async (req, res) => {
     try {
-        const urls = (await Url.find()).toSorted({ createdAt: -1 });
+        const urls = await Url.find().sort({ createdAt: -1 });
 
         const formatted = urls.map((url) => ({
             longUrl: url.longUrl,
@@ -114,4 +114,4 @@ const redirectToLongUrl = async (req,res) => {
 
 }
 
-module.exports = {shortenUrl,geAllUrls,redirectToLongUrl};
+module.exports = {shortenUrl,getAllUrls,redirectToLongUrl};
